@@ -65,6 +65,15 @@ app.use((err, req, res, next) => {
     });
   }
 
+  if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError') {
+    const validationErrors = err.errors ? err.errors.map(e => ({ field: e.path, message: e.message })) : [];
+    return res.status(400).json({
+      success: false,
+      message: err.message || 'Validation error',
+      errors: validationErrors
+    });
+  }
+
   if (err.statusCode) {
     return res.status(err.statusCode).json({
       success: false,
@@ -72,8 +81,12 @@ app.use((err, req, res, next) => {
     });
   }
 
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
+  console.error('Unhandled Server Error:', err);
+  res.status(500).json({
+    success: false,
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 // Start server

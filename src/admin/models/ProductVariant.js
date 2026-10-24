@@ -43,6 +43,16 @@ ProductVariant.init(
           msg: 'variant_image URL must not exceed 500 characters'
         }
       }
+    },
+    images: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: null
+    },
+    gallery: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: null
     }
   },
   {
@@ -60,6 +70,7 @@ ProductVariant.init(
 
 // Association setup in a deferred manner or direct require
 const Product = require('./Product');
+const VariantImage = require('./VariantImage');
 
 ProductVariant.belongsTo(Product, {
   as: 'product',
@@ -71,4 +82,15 @@ Product.hasMany(ProductVariant, {
   foreignKey: 'product_id'
 });
 
+ProductVariant.hasMany(VariantImage, {
+  as: 'gallery_images',
+  foreignKey: 'variant_id'
+});
+
+VariantImage.belongsTo(ProductVariant, {
+  as: 'variant',
+  foreignKey: 'variant_id'
+});
+
 module.exports = ProductVariant;
+

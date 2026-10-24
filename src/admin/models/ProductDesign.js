@@ -79,15 +79,31 @@ ProductDesign.init(
       }
     },
     shape: {
-      type: DataTypes.ENUM('rectangle', 'circle', 'arch'),
+      type: DataTypes.STRING(50),
       allowNull: false,
       defaultValue: 'rectangle',
       validate: {
-        isIn: {
-          args: [['rectangle', 'circle', 'arch']],
-          msg: 'shape must be one of: rectangle, circle, arch'
+        notEmpty: { msg: 'shape cannot be empty' },
+        len: {
+          args: [1, 50],
+          msg: 'shape must be between 1 and 50 characters'
         }
       }
+    },
+    points: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: null
+    },
+    clip_path: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: null
+    },
+    calibration: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: null
     },
     pos_x: {
       type: DataTypes.DECIMAL(6, 2),
